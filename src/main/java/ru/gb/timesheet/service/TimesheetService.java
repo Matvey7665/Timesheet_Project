@@ -1,7 +1,9 @@
 package ru.gb.timesheet.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.gb.timesheet.model.Timesheet;
+import ru.gb.timesheet.repository.EmployeeRepository;
 import ru.gb.timesheet.repository.ProjectRepository;
 import ru.gb.timesheet.repository.TimesheetRepository;
 
@@ -12,15 +14,14 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class TimesheetService {
 
   private final TimesheetRepository timesheetRepository;
   private final ProjectRepository projectRepository;
+  private final EmployeeRepository employeeRepository;
 
-  public TimesheetService(TimesheetRepository repository, ProjectRepository projectRepository) {
-    this.timesheetRepository = repository;
-    this.projectRepository = projectRepository;
-  }
+
 
   public Optional<Timesheet> findById(Long id) {
     return timesheetRepository.findById(id);
@@ -31,10 +32,17 @@ public class TimesheetService {
   }
 
   public List<Timesheet> findAll(LocalDate createdAtBefore, LocalDate createdAtAfter) {
-    return timesheetRepository.findAll(createdAtBefore, createdAtAfter);
+    //FIXME: вернуть фильтрацию
+    return timesheetRepository.findAll();
   }
 
   public Timesheet create(Timesheet timesheet) {
+    if (Objects.isNull(timesheet.getEmployeeId())){
+      throw new IllegalArgumentException("employeeId must not be null");
+    }
+    if (employeeRepository.findById(timesheet.getEmployeeId()).isEmpty()){
+      throw new NoSuchElementException("employee with id " + timesheet.getEmployeeId() + " does not exists");
+    }
     if (Objects.isNull(timesheet.getProjectId())) {
       throw new IllegalArgumentException("projectId must not be null");
     }
@@ -44,11 +52,11 @@ public class TimesheetService {
     }
 
     timesheet.setCreatedAt(LocalDate.now());
-    return timesheetRepository.create(timesheet);
+    return timesheetRepository.save(timesheet);
   }
 
   public void delete(Long id) {
-    timesheetRepository.delete(id);
+    timesheetRepository.deleteById(id);
   }
 
 }

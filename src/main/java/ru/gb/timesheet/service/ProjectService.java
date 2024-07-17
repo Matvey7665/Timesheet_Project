@@ -30,18 +30,18 @@ public class ProjectService {
   }
 
   public Project create(Project project) {
-    return projectRepository.create(project);
+    return projectRepository.save(project);
   }
 
   public void delete(Long id) {
-    projectRepository.delete(id);
+    projectRepository.deleteById(id);
   }
 
   public List<Timesheet> getTimesheets(Long id) {
     if (projectRepository.findById(id).isEmpty()) {
       throw new NoSuchElementException("Project with id = " + id + " does not exists");
     }
-
+    //throw new UnsupportedOperationException();
     return timesheetRepository.findByProjectId(id);
   }
 }
