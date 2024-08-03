@@ -31,8 +31,32 @@ public class REST {
    * 4. Слова внутри ресурса соединяются дефисом
    * GET github.com/project/pull-requests/{id}
    *
+   * API - спецификация/протокол/интерфейс/формат/договор/контракт
+   * API - Application Programming Interface
    *
+   * REST
    *
+   * Shop
+   *
+   * --предусмотреть шаблон для создания продукта
+   * GET /products - все продукты
+   * GET /products/{id} - получить конкрутный продукт
+   * PUT/products - обновить продукт
+   * POST /products - создать продукт
+   *
+   * GET /profile/{id} - получить настройки пользователя
+   * PUT /profile/{id} - обновить
+   * -- лучше передавать токен
+   * GET /profile {}
+   *
+   * Registration - регистрация пользователя
+   * POST /registration body = {}
+   *
+   * Cart - корзина пользователя
+   * GET /cart - получить "корзину" текущего пользователя
+   * POST /cart/{productId} или POST /cart body = {product = X, count = Y,...}
+   * DELETE /cart/{productId} - удалить товар из корзины(с любым кол-вом)
+   * DELETE /cart/{productId}?count=x
    */
 
 }

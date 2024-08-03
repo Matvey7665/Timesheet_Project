@@ -1,17 +1,21 @@
 package ru.gb.timesheet.rest;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.gb.timesheet.model.Timesheet;
 import ru.gb.timesheet.service.TimesheetService;
 
+import javax.swing.text.html.HTML;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/timesheets")
+@Tag(name = "Timesheet",description = "API для работы с таймшитами")
 public class TimesheetController {
 
   // GET - получить - не содержит тела
@@ -30,7 +34,8 @@ public class TimesheetController {
     this.service = service;
   }
 
-  @GetMapping("/{id}") // получить все
+  @GetMapping("/{id}")// получить все
+  @Operation(summary = "Get Timesheet by id",description = "Получает таймшит по иденификатору ")
   public ResponseEntity<Timesheet> get(@PathVariable Long id) {
     return service.findById(id)
       .map(ResponseEntity::ok)
@@ -42,6 +47,7 @@ public class TimesheetController {
   // /timesheets?createdAtAfter=2024-07-15
   // /timesheets?createdAtAfter=2024-07-15&createdAtBefore=2024-06-05
   @GetMapping
+  @Operation(summary = "Get All Timesheets",description = "Получает все таймшиты")
   public ResponseEntity<List<Timesheet>> getAll(
     @RequestParam(required = false) LocalDate createdAtBefore,
     @RequestParam(required = false) LocalDate createdAtAfter
@@ -53,7 +59,8 @@ public class TimesheetController {
   //                          -> exceptionHandler(e)
   // client <- [spring-server <- ...
 
-  @PostMapping // создание нового ресурса
+  @PostMapping// создание нового ресурса
+  @Operation(summary = "Create Timesheet",description = "Создает нового таймшита")
   public ResponseEntity<Timesheet> create(@RequestBody Timesheet timesheet) {
     final Timesheet created = service.create(timesheet);
 
@@ -62,6 +69,7 @@ public class TimesheetController {
   }
 
   @DeleteMapping("/{id}")
+  @Operation(summary = "Delete Timesheet",description = "удаляет таймшита по идентификатору")
   public ResponseEntity<Void> delete(@PathVariable Long id) {
     service.delete(id);
 
