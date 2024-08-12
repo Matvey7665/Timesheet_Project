@@ -1,7 +1,9 @@
 package ru.gb.timesheet.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.gb.timesheet.aspect.Timer;
 import ru.gb.timesheet.model.Timesheet;
 import ru.gb.timesheet.repository.EmployeeRepository;
 import ru.gb.timesheet.repository.ProjectRepository;
@@ -14,15 +16,24 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Service
-@RequiredArgsConstructor
+//@RequiredArgsConstructor
 public class TimesheetService {
 
   private final TimesheetRepository timesheetRepository;
   private final ProjectRepository projectRepository;
   private final EmployeeRepository employeeRepository;
 
+  public TimesheetService(TimesheetService timesheetService){
+    this(timesheetService.timesheetRepository,timesheetService.projectRepository,timesheetService.employeeRepository);
+  }
 
-
+  @Autowired
+  public TimesheetService(TimesheetRepository timesheetRepository,ProjectRepository projectRepository,EmployeeRepository employeeRepository){
+    this.projectRepository = projectRepository;
+    this.employeeRepository = employeeRepository;
+    this.timesheetRepository = timesheetRepository;
+  }
+  //@Timer
   public Optional<Timesheet> findById(Long id) {
     return timesheetRepository.findById(id);
   }
@@ -54,7 +65,7 @@ public class TimesheetService {
     timesheet.setCreatedAt(LocalDate.now());
     return timesheetRepository.save(timesheet);
   }
-
+  @Timer(enabled = false)
   public void delete(Long id) {
     timesheetRepository.deleteById(id);
   }
